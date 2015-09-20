@@ -39,8 +39,25 @@
 
     <main class="mdl-layout__content">
       <h1 class="chartTitle" style="margin: 5px 0;">My Family's Accounts</h1>
-      <p class="hintText">(Hover over the below chart to view your family's accounts)</p>
-      <div id="doughnutChart" class="chart"></div>
+      <p class="hintText">(Hover over the below chart to view each family member's balance)</p>
+      <table id="chartLegend" class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+        <thead>
+          <tr>
+            <th class="mdl-data-table__cell--non-numeric">Name</th>
+            <th>Color</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for customer in customers %}
+          <tr>
+            <td class="mdl-data-table__cell--non-numeric">{{ customer['nickname'] | replace("'s Account", "") }}</td>
+            <td><div style="width: 30px; height: 30px; background-color: {{ customer['color'] }}; padding: 5px; 
+    text-align: center;"></div></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div id="doughnutChart" class="chart" style="float: right;"></div>
       <section class="mdl-layout__tab-panel is-active" id="fixed-tab-1">
         <div class="page-content"><!-- Your content goes here --></div>
       </section>
@@ -52,14 +69,16 @@
       </section>
     </main>
   </div>
+
   <script>
     $(document).ready(function() {
       $("#doughnutChart").drawDoughnutChart([
+      {% set count = 0 %}
       {% for customer in customers %}
       { 
-        title: "{{ customer['nickname'] | safe }}",
+        title: "{{ customer['nickname'] | replace('\'s Account', '') }} / {{ customer['type'] | safe }}",
         value: {{ customer['balance'] }},
-        color: '#' + Math.floor(Math.random() * 16777215).toString(16)
+        color: "{{ customer['color'] }}"
       },
       {% endfor %}
       ]);
@@ -67,9 +86,9 @@
       window.setTimeout(function() {
         $(".chartPath").click(function(e) {
           e.preventDefault();
-          var text = $(".doughnutTip").text().split(":")[0];
+          var text = $(".doughnutTip").text().split(" / ")[0];
           $.grep($("#account_menu").find('a li'), function(item){
-            if ($(item).text() == text) { $(item).click(); }
+            if ($(item).text().split("'s Account")[0] == text) { $(item).click(); }
           });
         });
       }, 2000);

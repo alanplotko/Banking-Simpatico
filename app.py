@@ -18,11 +18,20 @@ def index():
     url = "http://api.reimaginebanking.com/{}?key={}".format("customers", app.key)
     data = json.loads(requests.get(url).text)[1]
     session['manager'] = data
-    if 'customer_data' not in session:
-        acccount_url = "http://api.reimaginebanking.com/{}/{}/accounts?key={}".format("customers", session['manager']['_id'], app.key)
-        customer_dict = collections.OrderedDict()
-        customer_data = json.loads(requests.get(acccount_url).text)
-        session['customer_data'] = customer_data
+    acccount_url = "http://api.reimaginebanking.com/{}/{}/accounts?key={}".format("customers", session['manager']['_id'], app.key)
+    customer_dict = collections.OrderedDict()
+    customer_data = json.loads(requests.get(acccount_url).text)
+    shadesOfBlue = ["#86BBD8", "#356D9C", "#0C4D8B"]
+    count = 0
+    print(customer_data)
+    for customer in customer_data:
+        if customer['type'] == "Checking":
+            customer['color'] = shadesOfBlue[count]
+            count += 1
+        else:
+            customer['color'] = "#A12830"
+    session['customer_data'] = customer_data
+    print(customer_data)
     return render_template('index.html', template_folder=tmpl_dir, customers=session['customer_data'], manager=session['manager'])
 
 @app.route('/account/<customer_id>', methods=["GET", "POST"])
@@ -31,6 +40,7 @@ def account(customer_id):
         url = "http://api.reimaginebanking.com/{}?key={}".format("customers", app.key)
         data = json.loads(requests.get(url).text)[1]
         session['manager'] = data
+        
         if 'current_customer' not in session or ('current_customer' in session and session['current_customer'] != customer_id):
             acccount_url = "http://api.reimaginebanking.com/accounts/{}?key={}".format(customer_id, app.key)
             data = json.loads(requests.get(acccount_url).text)
@@ -38,13 +48,20 @@ def account(customer_id):
         purchase_url = "http://api.reimaginebanking.com/accounts/{}/purchases?key={}".format(customer_id, app.key)
         data = json.loads(requests.get(purchase_url).text)
         sumPurchases = 0
+        
         for purchase in data:
             purchase['add_info'] = json.loads(requests.get("http://api.reimaginebanking.com/merchants/{}?key={}".format(purchase["merchant_id"], app.key)).text)
             sumPurchases += purchase['amount']
         session['purchases'] = data
         session['purchase_sum'] = sumPurchases
+
+        hotels_url = "http://priceline.com/api/hotelretail/listing/v3/42.0891413093459,-75.9684558838623/20150923/20150930/1/5?offset=0&sort=4&pageSize=4"
+        data = json.loads(requests.get(hotels_url).text)
+        session['hotels'] = data
+
         return render_template('account.html', template_folder=tmpl_dir, current_customer=session['current_customer'], 
-            customers=session['customer_data'], manager=session['manager'], purchases=session['purchases'], sumPurchases=session['purchase_sum'])
+            customers=session['customer_data'], manager=session['manager'], purchases=session['purchases'], 
+            sumPurchases=session['purchase_sum'], hotels=session['hotels'])
     elif request.method == "POST":
         account_url = "http://api.reimaginebanking.com/customers/{}?key={}".format(customer_id, app.key)
         payload = {

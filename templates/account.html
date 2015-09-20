@@ -99,11 +99,35 @@
               <h2 class="mdl-card__title-text">Rewards</h2>
             </div>
             <div class="mdl-card__supporting-text">
-              <span class="rewards">{{ current_customer['nickname'] }} has earned cashback on purchases. Additionally, {{ current_customer['nickname'] }} is registered with the Venture Credit Card, earning 2x miles for every dollar spent.<br /><br />Rewards: {{ "${:,.2f}".format(current_customer['rewards']) }}<br />Miles Earned: {{ "{:,.2f}".format(sumPurchases * 2) }}<br /></span>
+              <span class="rewards">Balance: {{ "${:,.2f}".format(current_customer['balance']) }}<br />Cashback: {{ "${:,.2f}".format(current_customer['rewards']) }}<br />Miles Earned: {{ "{:,.0f}".format(sumPurchases * 2) }}</span><br /><br />
+              {% if sumPurchases * 2 > 0 %}<div style="font-style: italic; font-size: 12px;"><a href="#" onclick="showCards()" style="text-decoration: none;">You have {{ (sumPurchases * 2) }} miles available thanks to your Venture card. Click here to explore what you could do with your miles!</a></div>{% endif %}
             </div>
           </div>
         </div>
       </section>
+      <div class="mdl-grid">
+        {% for k, v in hotels["hotels"].items() %}
+        {% if loop.index < 5 %}
+        <div class="card-event mdl-card mdl-cell mdl-cell--4-col mdl-shadow--2dp hotelCard" style="display: none;">
+          <div class="mdl-card__title mdl-card--expand">
+            <h4>
+              {% if v['thumbnailURL'] != None and v['thumbnailURL'] != "" %}
+                <img src="{{ v['thumbnailURL'] }}" style="border-radius: 50px; text-align: center;" /><br />
+              {% endif %}
+              {{ v['hotelName'] }}<br>
+            </h4>
+          </div>
+          <div class="mdl-card__actions mdl-card--border">
+            <a href="http://www.priceline.com/hotel/hotelMapGuide.do?propID={{ v['pclnHotelID'] }}" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+              Book Hotel
+            </a>
+            <div class="mdl-layout-spacer"></div>
+            <a href="#" onclick="$(this.parentNode.parentNode).fadeOut('slow');this.parentNode.parentNode.remove();"><i class="material-icons">close</i></a>
+          </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
       <section class="mdl-layout__tab-panel" id="fixed-tab-3">
         <div class="page-content">
           <div class="card-wide mdl-card mdl-shadow--2dp purchases">
@@ -111,7 +135,7 @@
               <h2 class="mdl-card__title-text">Purchases</h2>
             </div>
             <div class="mdl-card__supporting-text">
-              <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+              <table id="purchaseTable" class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
                 <thead>
                   <tr>
                     <th>Status</th>
@@ -143,5 +167,48 @@
       {% include 'includes/footer.html' %}
     </main>
   </div>
+
+  <!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDPRJhy_K4CKAbTg-RH9qTrZ36TGe6ubIE&libraries=places"></script>-->
+  <script>
+    function showCards() {
+      $('.hotelCard').fadeIn('slow').css({top: 100, opacity: 0}).animate({top: -10, opacity: 1}, 'slow');
+    }
+
+    function hideCards() {
+      $('.hotelCard').fadeOut('slow').css({top: -10, opacity: 1}).animate({top: 100, opacity: 0}, 'slow');
+    }
+
+    $(".mdl-layout__tab-ripple-container").click(function() {
+      hideCards();
+    });
+
+    // Google Maps - Use in future development to get latitude and longitude
+
+    /*Number.prototype.toRad = function() {
+      return this * Math.PI / 180;
+    }
+
+    Number.prototype.toDeg = function() {
+      return this * 180 / Math.PI;
+    }
+
+    google.maps.LatLng.prototype.destinationPoint = function(brng, dist) {
+      dist = dist / 6371;  
+      brng = brng.toRad();  
+      var lat1 = this.lat().toRad(), lon1 = this.lng().toRad();
+      var lat2 = Math.asin(Math.sin(lat1) * Math.cos(dist) + Math.cos(lat1) * Math.sin(dist) * Math.cos(brng));
+      var lon2 = lon1 + Math.atan2(Math.sin(brng) * Math.sin(dist) * Math.cos(lat1), Math.cos(dist) - Math.sin(lat1) * Math.sin(lat2));
+
+      if (isNaN(lat2) || isNaN(lon2)) return null;
+
+      return new google.maps.LatLng(lat2.toDeg(), lon2.toDeg());
+    }
+
+    function getNewLatLong(miles) {
+      var pointA = new google.maps.LatLng(42.45, -76.48); // Cornell
+      var pointB = pointA.destinationPoint(90, ((miles / 2) * 1.60934)) // Convert miles to kilometers
+      return pointB;
+    }*/
+  </script>
   </body>
 </html>

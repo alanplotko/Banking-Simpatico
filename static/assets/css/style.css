@@ -5,13 +5,80 @@ body {
     font-family: "Roboto", sans-serif;
 }
 
+.hotelCard {
+    position: relative;
+    bottom: 0;
+}
+
+.card-event h4 {
+  font-size: 18px;
+  width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-event.mdl-card img {
+    width: 100px;
+    margin: 10px;
+}
+
+.card-event.mdl-card {
+  width: 280px;
+  height: 210px;
+  background: #fff;
+  text-align: center;
+}
+
+.card-event > .mdl-card__actions {
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.card-event > .mdl-card__title {
+  align-items: flex-start;
+}
+
+.card-event > .mdl-card__title > h4 {
+  margin-top: 0;
+}
+
+.card-event > .mdl-card__actions {
+  display: flex;
+  box-sizing:border-box;
+  align-items: center;
+}
+.card-event > .mdl-card__title,
+.card-event > .mdl-card__actions,
+.card-event > .mdl-card__actions > .mdl-button {
+  color: #000;
+}
+
+#chartLegend {
+    position: fixed;
+    top: calc(100vh - 400px);
+    left: 114px;
+}
+
+#chartLegend th {
+    text-align: center;
+    font-size: 18px;
+    color: #000;
+    font-weight: normal;
+}
+
+#chartLegend td {
+    font-size: 16px;
+    vertical-align: middle;
+    padding: 8px 8px 8px 20px;
+}
+
 /* Purchases */
-.mdl-data-table,
-.mdl-data-table th {
+#purchaseTable,
+#purchaseTable th {
     font-size: 14px;
 }
 
-.mdl-data-table td {
+#purchaseTable td {
     padding-top: 15px;
 }
 
@@ -208,6 +275,7 @@ a span.BigRedHacksHeart:hover {
     margin-top: -27%;
     font-size: 22px;
     letter-spacing: .06em;
+    color: #fff;
 }
 
 .doughnutSummaryNumber {
@@ -215,7 +283,8 @@ a span.BigRedHacksHeart:hover {
     top: 50%;
     width: 100%;
     margin: 0 -10px auto;
-    font-size: 55px;
+    font-size: 48px;
+    color: #fff;
 }
 
 .chart path:hover { 

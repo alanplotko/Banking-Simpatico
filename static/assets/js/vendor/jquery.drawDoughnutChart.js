@@ -21,9 +21,9 @@
       settings = $.extend({
         segmentShowStroke : true,
         segmentStrokeColor : "#0C1013",
-        segmentStrokeWidth : 1,
+        segmentStrokeWidth : 0,
         baseColor: "rgba(0,0,0,0.5)",
-        baseOffset: 4,
+        baseOffset: 0,
         edgeOffset : 10,//offset from edge of $this
         percentageInnerCutout : 75,
         animation : true,
@@ -34,7 +34,7 @@
         tipOffsetY: -45,
         tipClass: "doughnutTip",
         summaryClass: "doughnutSummary",
-        summaryTitle: "Total Assets:",
+        summaryTitle: "Total Balance:",
         summaryTitleClass: "doughnutSummaryTitle",
         summaryNumberClass: "doughnutSummaryNumber",
         beforeDraw: function(){  },
@@ -143,7 +143,7 @@
 
     function pathMouseEnter(e){
       var order = $(this).data().order;
-      $tip.text(data[order].title + ": $" + data[order].value)
+      $tip.text(data[order].title + ": $" + data[order].value.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","))
         .fadeIn(200);
       settings.onPathEnter.apply($(this),[e,data]);
     }
@@ -197,7 +197,7 @@
     function drawDoughnutText(animationDecimal, segmentTotal){
       $summaryNumber
         .css({opacity: animationDecimal})
-        .text("$" + (segmentTotal * animationDecimal).toFixed(1));
+        .text("$" + Math.floor(segmentTotal * animationDecimal).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
     }
     function animateFrame(cnt, drawData){
       var easeAdjustedAnimationPercent =(settings.animation)? CapValue(easingFunction(cnt),null,0) : 1;
