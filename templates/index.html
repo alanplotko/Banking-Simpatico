@@ -1,0 +1,79 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Banking Simpatico</title>
+    {% include 'includes/head.html' %}
+  </head>
+  <body>
+  <!-- Simple header with fixed tabs. -->
+  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-tabs">
+    <header class="mdl-layout__header">
+      <div class="mdl-layout__header-row">
+        <!-- Title -->
+        <span class="mdl-layout-title"><a href="http://bankingsimpati.co">Banking Simpatico</a></span>
+        <div style="position: relative; left: calc(100% - 300px);">
+          <!-- Right aligned menu below button -->
+          <span style="font-size: 20px; vertical-align: middle;">My Account</span> <button id="demo-menu-lower-right" class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">more_vert</i>
+          </button>
+          <ul id="account_menu" class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="demo-menu-lower-right">
+            <a href="/"><li class="mdl-menu__item"><strong>Account Management</strong></li></a>
+            {% for customer in customers %}
+            <a href="/account/{{ customer['_id'] }}"><li class="mdl-menu__item">{{ customer['nickname'] }}</li></a>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      <!-- Tabs -->
+      <!--<div class="mdl-layout__tab-bar mdl-js-ripple-effect">
+        <a href="#fixed-tab-1" class="mdl-layout__tab is-active bold">Profile</a>
+        <a href="#fixed-tab-2" class="mdl-layout__tab bold">Accounts</a>
+        <a href="#fixed-tab-3" class="mdl-layout__tab bold">Purchases</a>
+      </div>-->
+    </header>
+    <div class="mdl-layout__drawer">
+      <span class="mdl-layout-title">Banking Simpatico</span>
+    </div>
+
+    <main class="mdl-layout__content">
+      <h1 class="chartTitle" style="margin: 5px 0;">My Family's Accounts</h1>
+      <p class="hintText">(Hover over the below chart to view your family's accounts)</p>
+      <div id="doughnutChart" class="chart"></div>
+      <section class="mdl-layout__tab-panel is-active" id="fixed-tab-1">
+        <div class="page-content"><!-- Your content goes here --></div>
+      </section>
+      <section class="mdl-layout__tab-panel" id="fixed-tab-2">
+        <div class="page-content"><!-- Your content goes here --></div>
+      </section>
+      <section class="mdl-layout__tab-panel" id="fixed-tab-3">
+        <div class="page-content"><!-- Your content goes here --></div>
+      </section>
+    </main>
+  </div>
+  <script>
+    $(document).ready(function() {
+      $("#doughnutChart").drawDoughnutChart([
+      {% for customer in customers %}
+      { 
+        title: "{{ customer['nickname'] | safe }}",
+        value: {{ customer['balance'] }},
+        color: '#' + Math.floor(Math.random() * 16777215).toString(16)
+      },
+      {% endfor %}
+      ]);
+
+      window.setTimeout(function() {
+        $(".chartPath").click(function(e) {
+          e.preventDefault();
+          var text = $(".doughnutTip").text().split(":")[0];
+          $.grep($("#account_menu").find('a li'), function(item){
+            if ($(item).text() == text) { $(item).click(); }
+          });
+        });
+      }, 2000);
+    });
+  </script>
+  </body>
+</html>

@@ -1,0 +1,147 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Banking Simpatico</title>
+    {% include 'includes/head.html' %}
+  </head>
+  <body>
+  <!-- Simple header with fixed tabs. -->
+  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-tabs">
+    <header class="mdl-layout__header">
+      <div class="mdl-layout__header-row">
+        <!-- Title -->
+        <span class="mdl-layout-title"><a href="http://bankingsimpati.co">Banking Simpatico</a></span>
+        <div style="position: relative; left: calc(100% - 300px);">
+          <!-- Right aligned menu below button -->
+          <span style="font-size: 20px; vertical-align: middle;">My Account</span> <button id="demo-menu-lower-right" class="mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">more_vert</i>
+          </button>
+          <ul id="account_menu" class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="demo-menu-lower-right">
+            <a href="/"><li class="mdl-menu__item">Account Management</li></a>
+            {% for customer in customers %}
+            {% if customer['nickname'] == current_customer['nickname'] %}
+              <a href="/account/{{ customer['_id'] }}"><li class="mdl-menu__item"><strong>{{ customer['nickname'] }}</strong></li></a>
+            {% else %}
+              <a href="/account/{{ customer['_id'] }}"><li class="mdl-menu__item">{{ customer['nickname'] }}</li></a>
+            {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      <!-- Tabs -->
+      <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
+        <a href="#fixed-tab-1" class="mdl-layout__tab is-active bold" >Edit Manager Profile</a>
+        <a href="#fixed-tab-2" class="mdl-layout__tab bold">Rewards</a>
+        <a href="#fixed-tab-3" class="mdl-layout__tab bold">Purchases</a>
+      </div>
+    </header>
+    <div class="mdl-layout__drawer">
+      <span class="mdl-layout-title">Banking Simpatico</span>
+    </div>
+
+    <main class="mdl-layout__content">
+
+      <section class="mdl-layout__tab-panel is-active" id="fixed-tab-1">
+        <div class="page-content">
+          <div class="card-wide mdl-card mdl-shadow--2dp account_update">
+            <div class="mdl-card__title">
+              <h2 class="mdl-card__title-text">Update Manager Profile ({{ manager['first_name'] }} {{ manager['last_name'] }})</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+              <p>{{ message }}</p>
+              <form id="account_update" action="/account/{{ current_customer['customer_id'] }}" method="POST">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                  <input class="mdl-textfield__input" type="text" id="fname" name="fname" value="{{ manager['first_name'] }}" />
+                  <label class="mdl-textfield__label" for="fname">First Name</label>
+                </div>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                  <input class="mdl-textfield__input" type="text" id="lname" name="lname" value="{{ manager['last_name'] }}" />
+                  <label class="mdl-textfield__label" for="lname">Last Name</label>
+                </div>
+                <br />
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                  <input class="mdl-textfield__input" type="text" id="street_number" name="street_number" value="{{ manager['address']['street_number'] }}" />
+                  <label class="mdl-textfield__label" for="street_number">Street Number</label>
+                </div>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                  <input class="mdl-textfield__input" type="text" id="street_name" name="street_name" value="{{ manager['address']['street_name'] }}" />
+                  <label class="mdl-textfield__label" for="street_name">Street Name</label>
+                </div>
+                <br />
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                  <input class="mdl-textfield__input" type="text" id="city" name="city" value="{{ manager['address']['city'] }}" />
+                  <label class="mdl-textfield__label" for="city">City</label>
+                </div>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                  <input class="mdl-textfield__input" type="text" id="state" name="state" value="{{ manager['address']['state'] }}" />
+                  <label class="mdl-textfield__label" for="state">State</label>
+                </div>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                  <input class="mdl-textfield__input" type="text" id="zip" name="zip" value="{{ manager['address']['zip'] }}" />
+                  <label class="mdl-textfield__label" for="zip">Zip Code</label>
+                </div>
+            </div>
+            <div class="mdl-card__actions mdl-card--border">
+              <a onclick="document.getElementById('account_update').submit();" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                Update
+              </a>
+            </div>
+            </form>
+          </div>
+        </div>
+      </section>
+      <section class="mdl-layout__tab-panel" id="fixed-tab-2">
+        <div class="page-content">
+          <div class="card-wide mdl-card mdl-shadow--2dp rewards">
+            <div class="mdl-card__title">
+              <h2 class="mdl-card__title-text">Rewards</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+              <span class="rewards">{{ current_customer['nickname'] }} has earned cashback on purchases. Additionally, {{ current_customer['nickname'] }} is registered with the Venture Credit Card, earning 2x miles for every dollar spent.<br /><br />Rewards: {{ "${:,.2f}".format(current_customer['rewards']) }}<br />Miles Earned: {{ "{:,.2f}".format(sumPurchases * 2) }}<br /></span>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="mdl-layout__tab-panel" id="fixed-tab-3">
+        <div class="page-content">
+          <div class="card-wide mdl-card mdl-shadow--2dp purchases">
+            <div class="mdl-card__title">
+              <h2 class="mdl-card__title-text">Purchases</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+              <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+                <thead>
+                  <tr>
+                    <th>Status</th>
+                    <th class="mdl-data-table__cell--non-numeric">Purchase Date</th>
+                    <th>Item Purchased</th>
+                    <th>Merchant</th>
+                    <th>Quantity</th>
+                    <th>Unit price</th>
+                  </tr>
+                </thead>
+                <tbody>              
+                  {% for purchase in purchases %}
+                  <tr>
+                    <td style="padding-top:11px;">{% if purchase['status'] == "executed" %}<i class="material-icons">check_box</i>{% else %}<i class="material-icons">check_box_outline_blank</i>{% endif %}</td>
+                    <td class="mdl-data-table__cell--non-numeric">{{ purchase['purchase_date'] }}</td>
+                    <td>{{ purchase['description'] }}</td>
+                    <td>{{ purchase['add_info']['name'] }}</td>
+                    <td>1</td>
+                    <td>{{ "${:,.2f}".format(purchase['amount']) }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="mdl-layout-spacer"></div>
+      {% include 'includes/footer.html' %}
+    </main>
+  </div>
+  </body>
+</html>
