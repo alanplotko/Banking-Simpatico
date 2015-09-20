@@ -5,6 +5,10 @@ body {
     font-family: "Roboto", sans-serif;
 }
 
+.mdl-layout__drawer-button {
+    display: none;
+}
+
 .hotelCard {
     position: relative;
     bottom: 0;
@@ -106,6 +110,7 @@ a span.BigRedHacksHeart:hover {
 .mdl-layout-title a {
     color: #fff;
     text-decoration: none;
+    margin-left: -30px;
 }
 
 .mdl-mini-footer__left-section {

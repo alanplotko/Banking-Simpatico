@@ -92,12 +92,12 @@ def account(customer_id):
                 message = "Error code ({}): Request failed. Please try again.".format(data['code'])
         return render_template('account.html', template_folder=tmpl_dir, current_customer=session['current_customer'], 
             customers=session['customer_data'], manager=session['manager'], purchases=session['purchases'], 
-            sumPurchases=session['purchase_sum'], message=message)
+            sumPurchases=session['purchase_sum'], message=message, hotels=session['hotels'])
     else:
         message = "Error: Method not allowed."
         return render_template('account.html', template_folder=tmpl_dir, current_customer=session['current_customer'], 
             customers=session['customer_data'], manager=session['manager'], purchases=session['purchases'], 
-            sumPurchases=session['purchase_sum'], message=message)
+            sumPurchases=session['purchase_sum'], message=message, hotels=session['hotels'])
 
 '''
 @app.route('/update/<customer_id>', methods=["POST"])

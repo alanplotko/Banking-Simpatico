@@ -53,11 +53,11 @@
               <p>{{ message }}</p>
               <form id="account_update" action="/account/{{ current_customer['customer_id'] }}" method="POST">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                  <input class="mdl-textfield__input" type="text" id="fname" name="fname" value="{{ manager['first_name'] }}" />
+                  <input class="mdl-textfield__input" type="text" id="fname" name="fname" value="{{ manager['first_name'] }}" disabled />
                   <label class="mdl-textfield__label" for="fname">First Name</label>
                 </div>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                  <input class="mdl-textfield__input" type="text" id="lname" name="lname" value="{{ manager['last_name'] }}" />
+                  <input class="mdl-textfield__input" type="text" id="lname" name="lname" value="{{ manager['last_name'] }}" disabled />
                   <label class="mdl-textfield__label" for="lname">Last Name</label>
                 </div>
                 <br />
@@ -100,7 +100,7 @@
             </div>
             <div class="mdl-card__supporting-text">
               <span class="rewards">Balance: {{ "${:,.2f}".format(current_customer['balance']) }}<br />Cashback: {{ "${:,.2f}".format(current_customer['rewards']) }}<br />Miles Earned: {{ "{:,.0f}".format(sumPurchases * 2) }}</span><br /><br />
-              {% if sumPurchases * 2 > 0 %}<div style="font-style: italic; font-size: 12px;"><a href="#" onclick="showCards()" style="text-decoration: none;">You have {{ (sumPurchases * 2) }} miles available thanks to your Venture card. Click here to explore what you could do with your miles!</a></div>{% endif %}
+              {% if sumPurchases * 2 > 0 %}<div style="font-style: italic; font-size: 12px;"><a href="#" onclick="showCards()" style="text-decoration: none;">You have {{ "{:,.0f}".format(sumPurchases * 2) }} miles available thanks to your Venture card. Click here to explore what you could do with your miles!</a></div>{% endif %}
             </div>
           </div>
         </div>
@@ -175,10 +175,10 @@
     }
 
     function hideCards() {
-      $('.hotelCard').fadeOut('slow').css({top: -10, opacity: 1}).animate({top: 100, opacity: 0}, 'slow');
+      $('.hotelCard').fadeOut('fast').css({top: -10, opacity: 1}).animate({top: 100, opacity: 0}, 'slow');
     }
 
-    $(".mdl-layout__tab-ripple-container").click(function() {
+    $(".mdl-layout__tab.bold").click(function() {
       hideCards();
     });
 
