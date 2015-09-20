@@ -91,6 +91,7 @@ body {
 .mdl-mini-footer {
     height: 50px;
     margin: 0;
+    margin-left: 34px;
     padding: 0;
 }
 
